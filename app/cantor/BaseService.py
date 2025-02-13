@@ -20,6 +20,7 @@ class BaseService:
         self.days_to_subtract = 0 if weekday in range(0, 5) else 1 if weekday == 5 else 2
         self.calculated_date = self.today - timedelta(days=self.days_to_subtract)
         self.url_template = "http://api.nbp.pl/api/exchangerates/rates/a/{currency}/{date}/"
+        self.url_table = "http://api.nbp.pl/api/exchangerates/tables/A/{date}/?format=json"
         
     def get_url(self, currency, date):
         """
@@ -40,3 +41,13 @@ class BaseService:
             str: The calculated date as a string.
         """
         return self.calculated_date.strftime("%Y-%m-%d")
+    
+    def get_table_url(self, date):
+        """
+        Generates a URL for fetching the exchange rate table from the NBP API for a given date.
+        Args:
+            date (str): The date for which to fetch the exchange rate table in 'YYYY-MM-DD' format.
+        Returns:
+            str: The formatted URL for the NBP API table.
+        """
+        return self.url_table.format(date=date)

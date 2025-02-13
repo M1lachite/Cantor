@@ -16,15 +16,6 @@ def index():
     """
     return render_template('cantor/index.html')
 
-@bp.route('/categories')
-def categories():
-    """Render the categories page.
-
-    Returns:
-        Rendered HTML template for the categories page.
-    """
-    return render_template('cantor/categories.html')
-
 @bp.route('cantor', methods=['GET', 'POST'])
 def cantor():
     """Handle currency exchange requests.

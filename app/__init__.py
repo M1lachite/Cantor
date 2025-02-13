@@ -16,6 +16,9 @@ def create_app(config_class=Config):
     
     from app.models import exchange
 
+    from app.MidTable import bp as MidTable_bp
+    app.register_blueprint(MidTable_bp, url_prefix='/MidTable')
+
     @app.route('/test/')
     def test_page():
         return "<h1>Test page</h1>"
