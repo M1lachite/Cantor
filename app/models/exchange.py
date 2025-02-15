@@ -4,11 +4,13 @@ class ExchangeRecord(db.Model):
     __tablename__ = 'cantor'
     
     id = db.Column(db.Integer, primary_key=True)
-    currency_one = db.Column(db.String(3), nullable=False)
-    currency_two = db.Column(db.String(3), nullable=False)
-    exchange_rate = db.Column(db.Float)
-    date = db.Column(db.String(10))
+    currency_one = db.Column(db.String(3))
+    currency_two = db.Column(db.String(3))
     amount = db.Column(db.Float)
+    date = db.Column(db.String(10))
+    exchange_rate_one = db.Column(db.REAL)
+    exchange_rate_two = db.Column(db.REAL)
+    exchange_rate_both = db.Column(db.Float)
     result = db.Column(db.Float)
 
     def __repr__(self):

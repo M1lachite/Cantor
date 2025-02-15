@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Exchange Result{% endblock %}
+
+{% block content %}
+
+<head>
+    <style>
+        /* Style dla response.html */
+        body.response-page { /* Dodajemy klasę do body */
+            margin: 0;
+            padding: 0;
+        }
+
+        .response-page h1 { /* Dodajemy klasę do h1 */
+            margin-bottom: 20px;
+        }
+
+        .response-page .content-wrapper { /* Dodajemy klasę do kontenera */
+            margin-left: 40px; /* Przesuwamy treść w prawo o 40px */
+            margin-top: 10px; /* Przesuwamy treść w dół o 10px */
+        }
+
+        .response-page .content-wrapper h1,
+        .response-page .content-wrapper p,
+        .response-page .content-wrapper ul {
+            margin-left: 0;
+            padding-left: 20px;
+        }
+
+        .response-page .content-wrapper ul {
+            list-style-type: disc;
+        }
+
+        .response-page .content-wrapper button {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<div class="response-container">  <h1>Exchange result</h1>
+
+    {% if type == "str" %}
+        <p>{{ result }}</p>
+    {% elif type == "dict" %}
+        <p>{{ result.result_string }}</p>
+
+        {% if result.exchange_rate_both %}
+            <p>Exchange rate between currencies: {{ result.exchange_rate_both }}</p>
+        {% endif %}
+
+        <p>Mid rates:</p>
+        <ul>
+            {% if result.mid_rates and result.mid_rates.items() %}
+                {% for currency, rate in result.mid_rates.items() %}
+                    <li>{{ currency }}: {{ rate }}</li>
+                {% endfor %}
+            {% else %}
+                <li>1.0</li>
+            {% endif %}
+        </ul>
+    {% elif type == "float" %}
+        <p>{{ result }}</p>
+    {% else %}
+        <p>{{ result }}</p>
+    {% endif %}
+
+    <button onclick="window.location.href='{{ url_for('cantor.index') }}'">Return</button>
+
+</div>  {% endblock %}

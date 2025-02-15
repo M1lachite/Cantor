@@ -2,7 +2,7 @@ from flask import render_template, request
 from app.cantor import bp
 from app.cantor.Cantor import Cantor
 from app.cantor.CurrencyService import CurrencyService
-from app.cantor.BaseService import BaseService
+from app.main.BaseService import BaseService
 
 Service = BaseService()
 date = Service.date
@@ -38,5 +38,5 @@ def cantor():
     amount = float(request.form.get("amount"))
     cantor = Cantor(currency_one, currency_two, amount, date, currency_service)
     result = cantor.get_data()
-    return result
+    return render_template('cantor/response.html', result=result, type=type(result).__name__)
     

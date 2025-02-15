@@ -2,21 +2,42 @@
 {% block title %}Rate Table{% endblock %}
 {% block content %}
 
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 10px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-</style>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+        /* Style for the datepicker */
+        .datepicker {
+            position: relative;
+            display: inline-block;
+        }
+
+        .datepicker input {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<div class="datepicker">
+    <label for="date">Date:</label>
+    <input type="text" id="date" name="date" value="{{ date }}">
+</div>
 
 <table>
     <thead>
@@ -27,14 +48,35 @@
         </tr>
     </thead>
     <tbody>
-        {% for name, code, rate in table_data %}
-        <tr>
-            <td>{{ name }}</td>
-            <td>{{ code }}</td>
-            <td>{{ rate }}</td>
-        </tr>
-        {% endfor %}
+        {% if table_data == "Table is not available." or table_data == "Invalid data format." %}
+            <tr><td colspan="3">{{ table_data }}</td></tr>
+        {% else %}
+            {% for name, code, rate in table_data %}
+            <tr>
+                <td>{{ name }}</td>
+                <td>{{ code }}</td>
+                <td>{{ rate }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
     </tbody>
 </table>
+
+<script>
+    flatpickr("#date", {
+        enableTime: false,
+        dateFormat: "Y-m-d",
+        minDate: "2000-01-01",
+        maxDate: new Date(),
+        disable: [
+            function(date) {
+                return date.getDay() === 0 || date.getDay() === 6;
+            }
+        ],
+        onChange: function(selectedDates, dateStr, instance) {
+            window.location.href = `/MidTable?date=${dateStr}`;
+        }
+    });
+</script>
 
 {% endblock %}

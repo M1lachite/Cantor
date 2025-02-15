@@ -1,5 +1,6 @@
 import requests
 from flask import jsonify, request
+from app.main.BaseService import BaseService
 
 class CurrencyService:
     """

@@ -57,6 +57,7 @@ class Cantor:
         else:
             return self.exchange_between_foreign_currencies()
 
+
     def exchange_with_pln(self):
         """
         Perform the currency exchange operation when one of the currencies is PLN.
@@ -69,9 +70,12 @@ class Cantor:
         result = self.amount / rate if self.currency_one == "pln" else self.amount * rate
         result = round(result, 2)
         
-        self.save_to_db(rate, result)
+        self.save_to_db(rate, 1, result)
         
-        return f"{self.amount} {'PLN' if self.currency_one == 'pln' else non_pln_currency} = {result} {'PLN' if self.currency_one != 'pln' else non_pln_currency}"
+        return {
+        "result_string": f"By exchanging {self.amount} {'PLN' if self.currency_one == 'pln' else non_pln_currency} you will receive {result} {'PLN' if self.currency_one != 'pln' else non_pln_currency}",
+        "mid_rates": self.mid_rates  
+        }
 
     def exchange_between_foreign_currencies(self):
         """
@@ -86,39 +90,51 @@ class Cantor:
         result = (self.amount * rate_one) / rate_two
         result = round(result, 2)
         
-        self.save_to_db(rate_one / rate_two, result)
+        self.save_to_db(rate_one, rate_two, result)
         
-        return f"{self.amount} {self.currency_one} = {result} {self.currency_two}, mid rates: {self.mid_rates}"
+        return {
+        "result_string": f"By exchanging {self.amount} {self.currency_one} you will receive {result} {self.currency_two}.",
+        "mid_rates": self.mid_rates
+        }
 
     def get_data(self):
         """
         Get the result of the currency exchange operation.
         """
         return self.exchange()
+
     
-    def save_to_db(self, rate, result):
-        """
-        Save the exchange operation to the database.
-        """
-        rate = round(rate, 2)
+    def save_to_db(self, rate_one, rate_two, result):
+        rate_one = round(rate_one, 2)
+        rate_two = round(rate_two, 2)
+        exchange_rate_both = rate_one / rate_two if rate_two != 0 else None
+        if exchange_rate_both is not None:
+            exchange_rate_both = round(exchange_rate_both, 2)
         record = ExchangeRecord(
             currency_one=self.currency_one,
             currency_two=self.currency_two,
             amount=self.amount,
             date=self.date,
-            exchange_rate=rate,
+            exchange_rate_one=rate_one,
+            exchange_rate_two=rate_two,
+            exchange_rate_both=exchange_rate_both,
             result=result
         )
         db.session.add(record)
         db.session.commit()
     
+    
     def _is_same_currency(self):
         """Check if the user is exchanging the same currency."""
         return self.currency_one == self.currency_two
+
 
     def _handle_same_currency(self):
         """Handle the case where both currencies are the same (rate = 1.0)."""
         rate = 1.0
         result = self.amount
-        self.save_to_db(rate, result)
-        return f"{self.amount} {self.currency_one} = {result} {self.currency_two}"
+        self.save_to_db(1, 1, result)
+        return {
+        "result_string": f"By exchanging {self.amount} {self.currency_one} you will receive {result} {self.currency_two}",
+        "mid_rates": self.mid_rates
+        }
