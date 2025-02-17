@@ -70,3 +70,31 @@ class BaseService:
         elif date.weekday() == 6:
             date -= timedelta(days=2)
         return date.strftime('%Y-%m-%d')
+    
+
+    def get_valid_date_based_on_time(self):
+        """
+        Determines a valid date based on the current time and specific cutoff rules.
+
+        The method uses the current date and time (self.today) to determine a valid date:
+        - If today is Monday and the current time is before 12:15 PM, the valid date is set to the previous Friday.
+        - If the current time is before 12:15 PM on any other day, the valid date is set to the previous day.
+        - Otherwise, the valid date is set to today.
+
+        Returns:
+            str: A string representing the valid date in the format 'YYYY-MM-DD'.
+        """
+        now = self.today
+        cutoff_time = now.replace(hour=12, minute=15, second=0, microsecond=0)
+
+        # Jeśli jest poniedziałek i przed 12:15 => piątek
+        if now.weekday() == 0 and now < cutoff_time:
+            valid_date = now - timedelta(days=3)  # Piątek
+        # Jeśli jest przed 12:15 w jakikolwiek dzień => wczoraj
+        elif now < cutoff_time:
+            valid_date = now - timedelta(days=1)
+        else:
+            valid_date = now  # Dziś, jeśli po 12:15
+
+        return self.get_valid_date(valid_date.strftime('%Y-%m-%d'))
+    

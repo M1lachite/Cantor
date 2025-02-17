@@ -2,6 +2,7 @@ import requests
 from flask import jsonify, request
 from app.extentions import db
 from app.models.exchange import ExchangeRecord
+from datetime import datetime
 
 class Cantor:
     """
@@ -114,7 +115,8 @@ class Cantor:
             currency_one=self.currency_one,
             currency_two=self.currency_two,
             amount=self.amount,
-            date=self.date,
+            rate_date=self.date,
+            exchange_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             exchange_rate_one=rate_one,
             exchange_rate_two=rate_two,
             exchange_rate_both=exchange_rate_both,

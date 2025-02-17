@@ -5,7 +5,7 @@ from app.cantor.CurrencyService import CurrencyService
 from app.main.BaseService import BaseService
 
 Service = BaseService()
-date = Service.date
+date = Service.get_valid_date_based_on_time()
 
 @bp.route('/')
 def index():
@@ -36,7 +36,9 @@ def cantor():
 
     currency_service = CurrencyService(Service)
     amount = float(request.form.get("amount"))
+
     cantor = Cantor(currency_one, currency_two, amount, date, currency_service)
     result = cantor.get_data()
     return render_template('cantor/response.html', result=result, type=type(result).__name__)
+
     
